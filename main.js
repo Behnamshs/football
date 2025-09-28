@@ -18,12 +18,6 @@
     const rect = el.getBoundingClientRect();
     offsetX = clientX - rect.left;
     offsetY = clientY - rect.top;
-    // برای موبایل: بازیکن دقیق همون‌جا شروع بشه
-    el.style.position = 'absolute';
-    el.style.left = (clientX - offsetX) + 'px';
-    el.style.top = (clientY - offsetY) + 'px';
-    el.style.zIndex = 10000;
-    document.body.appendChild(el);
   }
   function moveDrag(clientX, clientY){
     if(!dragged) return;
@@ -39,15 +33,16 @@
     const inField = clientX>fieldRect.left && clientX<fieldRect.right && clientY>fieldRect.top && clientY<fieldRect.bottom;
     if(inField){
       if(playersOnField>=11 && !dragged.dataset.onField){
-        dragged.classList.add('on-field');
         alert("بیشتر از ۱۱ بازیکن نمیشه!");
         returnToBench(dragged);
-      } else {
+      
+    dragged.classList.add('on-field');
+} else {
+    dragged.classList.remove('on-field');
         dragged.dataset.onField = "true";
         playersOnField = document.querySelectorAll('[data-on-field="true"]').length;
       }
     } else {
-      dragged.classList.remove('on-field');
       returnToBench(dragged);
     }
     dragged.classList.remove('dragging');
@@ -180,18 +175,3 @@ document.querySelectorAll('.control').forEach((ctrl, idx)=>{
   });
 });
 
-function calculateUserTeamPower(){
-  let power = 0;
-
-  // جمع امتیاز تاکتیک‌ها
-  document.querySelectorAll('.control input').forEach(input=>{
-    power += parseInt(input.value);
-  });
-
-  // جمع قدرت بازیکن‌های روی زمین
-  document.querySelectorAll('.field-player').forEach(p=>{
-    power += parseInt(p.dataset.power || 5);
-  });
-
-  return power;
-}
