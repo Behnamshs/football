@@ -185,3 +185,8 @@
   border: 2px solid #fff;
   cursor: pointer;
 }
+/* small on-field player */
+.subs.on-field {
+  width: 4vh;
+  height: 4vh;
+}
