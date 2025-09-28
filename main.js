@@ -18,6 +18,12 @@
     const rect = el.getBoundingClientRect();
     offsetX = clientX - rect.left;
     offsetY = clientY - rect.top;
+    // برای موبایل: بازیکن دقیق همون‌جا شروع بشه
+    el.style.position = 'absolute';
+    el.style.left = (clientX - offsetX) + 'px';
+    el.style.top = (clientY - offsetY) + 'px';
+    el.style.zIndex = 10000;
+    document.body.appendChild(el);
   }
   function moveDrag(clientX, clientY){
     if(!dragged) return;
@@ -33,6 +39,7 @@
     const inField = clientX>fieldRect.left && clientX<fieldRect.right && clientY>fieldRect.top && clientY<fieldRect.bottom;
     if(inField){
       if(playersOnField>=11 && !dragged.dataset.onField){
+        dragged.classList.add('on-field');
         alert("بیشتر از ۱۱ بازیکن نمیشه!");
         returnToBench(dragged);
       } else {
@@ -40,6 +47,7 @@
         playersOnField = document.querySelectorAll('[data-on-field="true"]').length;
       }
     } else {
+      dragged.classList.remove('on-field');
       returnToBench(dragged);
     }
     dragged.classList.remove('dragging');
@@ -187,21 +195,3 @@ function calculateUserTeamPower(){
 
   return power;
 }
-document.getElementById('quick-match-btn').addEventListener('click', ()=>{
-  const userPower = calculateUserTeamPower();
-  const cityPower = 80; // قدرت تیم منچستر سیتی ثابت
-
-  let userGoals = 0;
-  let cityGoals = 0;
-
-  for(let i=0;i<90;i++){ // شبیه‌سازی هر دقیقه
-    if(Math.random()*userPower/(userPower+cityPower) > 0.95){
-      userGoals++;
-    }
-    if(Math.random()*cityPower/(userPower+cityPower) > 0.95){
-      cityGoals++;
-    }
-  }
-
-  alert(`Quick Match Result: Liverpool ${userGoals} - ${cityGoals} Manchester City`);
-});
